@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 // imports DEFAULT(alias) export from axios.js
 import axios from "../api";
-import YouTube from "react-youtube";
-import movieTrailer from "movie-trailer";
+// import movieTrailer from "movie-trailer";
 import styled from "styled-components";
 
 const base_URL = "https://image.tmdb.org/t/p/original/";
@@ -14,50 +13,15 @@ type Props = {
 };
 // Row component
 const Row: React.FC<Props> = ({ title, fetchUrl, isLargeRow = false }) => {
-  /* Creating a movie state (short term memory) */
   const [movies, setMovies] = useState<any>([]);
-  /* Creating a trailer state (short term memory) */
-  const [trailerURL, setTrailerURL] = useState("");
-  //   Pulling information from tmdb API when the pages loads
   useEffect(() => {
-    //   Running async call
     async function fetchData() {
-      // Waiting for the promise to come back with movie results, fetchUrl(outside the code block)
       const request = await axios.get(fetchUrl);
       setMovies(request.data.results);
       return request;
     }
-    // if [empty], run once when the row loads, and dont run again
     fetchData();
   }, [fetchUrl]);
-  //   console.log(movies);
-
-  const opts = {
-    height: "390",
-    width: "100%",
-    playerVars: {
-      // https://developers.google.com/youtube/player_parameters
-      autoplay: 1,
-    },
-  };
-
-  // //   When user clicks on the movie picture
-  // const handleClick = (movie: any) => {
-  //   //   If trailer is found clear the url
-  //   if (trailerURL) {
-  //     setTrailerURL("");
-  //   } else {
-  //     // Search for movie trailer full url
-  //     movieTrailer(movie?.name || "")
-  //       .then((url: string) => {
-  //         // https://www.youtube.com/watch?v=aSØDÆømlsdæ
-  //         const urlParams = new URLSearchParams(new URL(url).search); // urlParams gives us everthing after the ?
-  //         setTrailerURL(urlParams.get("v")); //urlParams gives us everything after v=
-  //         // Displays error message if unable to find url
-  //       })
-  //       .catch((error) => console.log(error));
-  //   }
-  // };
 
   return (
     <Container className="row">
@@ -81,10 +45,7 @@ const Row: React.FC<Props> = ({ title, fetchUrl, isLargeRow = false }) => {
             alt={movie.name}
           />
         ))}
-        {/* Contain -> posters */}
       </Posters>
-      {/* Embedding youtube movie trailers to show */}
-      {trailerURL && <YouTube videoId={trailerURL} opts={opts as any} />}
     </Container>
   );
 };
